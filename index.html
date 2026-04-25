@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fund Returns Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+    }
+    .controls {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    button {
+      margin: 5px;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #e0e0e0;
+    }
+    button.active {
+      background: #007bff;
+      color: white;
+    }
+    .chart-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .chart-card {
+      padding: 16px;
+      background: #fafafa;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .chart-card h2 {
+      margin-top: 0;
+      font-size: 1.1rem;
+      text-align: center;
+    }
+    @media (max-width: 800px) {
+      .chart-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>My Fund Returns</h1>
+
+    <div class="controls">
+      <button onclick="setRange(30, this)" disabled>1M</button>
+      <button onclick="setRange(180, this)" disabled>6M</button>
+      <button onclick="setRange(365, this)" disabled>1Y</button>
+      <button onclick="setRange(null, this)" class="active" disabled>All</button>
+    </div>
+
+    <div class="chart-row">
+      <div class="chart-card">
+        <h2>NAV</h2>
+        <canvas id="navChart"></canvas>
+      </div>
+      <div class="chart-card">
+        <h2>Percentage Return</h2>
+        <canvas id="percentageChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Load data from separate file
+    let rawData = [];
+    let dataLoaded = false;
+
+    fetch('returns.json')
+      .then(response => response.json())
+      .then(data => {
+        rawData = data;
+        dataLoaded = true;
+        renderCharts(rawData);
+        // Enable buttons
+        document.querySelectorAll('button').forEach(btn => btn.disabled = false);
+      })
+      .catch(error => console.error('Error loading data:', error));
+
+    let navChart;
+    let percentageChart;
+
+    function filterData(days) {
+      if (!days) return rawData;
+
+      const now = new Date(rawData[rawData.length - 1].date);
+      const cutoff = new Date(now);
+      cutoff.setDate(cutoff.getDate() - days);
+
+      return rawData.filter(d => new Date(d.date) >= cutoff);
+    }
+
+    function renderCharts(filteredData) {
+      const labels = filteredData.map(d => d.date);
+      const navValues = filteredData.map(d => d.nav);
+      const percentageValues = filteredData.map(d => d.percentage_return);
+
+      if (navChart) navChart.destroy();
+      if (percentageChart) percentageChart.destroy();
+
+      const navCtx = document.getElementById('navChart').getContext('2d');
+      const percentageCtx = document.getElementById('percentageChart').getContext('2d');
+
+      navChart = new Chart(navCtx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'NAV ($)',
+            data: navValues,
+            borderWidth: 2,
+            borderColor: '#007bff',
+            backgroundColor: 'rgba(0, 123, 255, 0.1)',
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: { title: { display: true, text: 'Date' } },
+            y: { beginAtZero: false, title: { display: true, text: 'NAV ($)' } }
+          }
+        }
+      });
+
+      percentageChart = new Chart(percentageCtx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Percentage Return (%)',
+            data: percentageValues,
+            borderWidth: 2,
+            borderColor: '#28a745',
+            backgroundColor: 'rgba(40, 167, 69, 0.1)',
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: { title: { display: true, text: 'Date' } },
+            y: { beginAtZero: false, title: { display: true, text: 'Percentage Return (%)' } }
+          }
+        }
+      });
+    }
+
+    function setRange(days, button) {
+      if (!dataLoaded) return;
+
+      const buttons = document.querySelectorAll('button');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+
+      const filtered = filterData(days);
+      renderCharts(filtered);
+    }
+
+    // Initial render is now handled in the fetch
+  </script>
+</body>
+</html>
