@@ -5,72 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fund Returns Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f7fa;
-      margin: 0;
-      padding: 20px;
-    }
-    .container {
-      max-width: 1000px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    h1 {
-      text-align: center;
-    }
-    .controls {
-      text-align: center;
-      margin-bottom: 15px;
-    }
-    button {
-      margin: 5px;
-      padding: 8px 14px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      background: #e0e0e0;
-    }
-    button.active {
-      background: #007bff;
-      color: white;
-    }
-    .chart-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-    }
-    .chart-card {
-      padding: 16px;
-      background: #fafafa;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    }
-    .chart-card h2 {
-      margin-top: 0;
-      font-size: 1.1rem;
-      text-align: center;
-    }
-    @media (max-width: 800px) {
-      .chart-row {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
     <h1>My Fund Returns</h1>
 
     <div class="controls">
-      <button onclick="setRange(30, this)" disabled>1M</button>
-      <button onclick="setRange(180, this)" disabled>6M</button>
-      <button onclick="setRange(365, this)" disabled>1Y</button>
+      <button onclick="setRange(7, this)" disabled>1W </button>
+      <button onclick="setRange(30, this)" disabled>1M </button>
+      <button onclick="setRange(180, this)" disabled>6M </button>
+      <button onclick="setRange(365, this)" disabled>1Y </button>
       <button onclick="setRange(null, this)" class="active" disabled>All</button>
+    </div>
+
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="summary-label">1W</div>
+        <div class="summary-value" id="summary-7">--</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">1M</div>
+        <div class="summary-value" id="summary-30">--</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">6M</div>
+        <div class="summary-value" id="summary-180">--</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">1Y</div>
+        <div class="summary-value" id="summary-365">--</div>
+      </div>
     </div>
 
     <div class="chart-row">
@@ -83,6 +48,7 @@
         <canvas id="percentageChart"></canvas>
       </div>
     </div>
+ 
   </div>
 
   <script>
@@ -96,6 +62,7 @@
         rawData = data;
         dataLoaded = true;
         renderCharts(rawData);
+        renderSummaryBoxes();
         // Enable buttons
         document.querySelectorAll('button').forEach(btn => btn.disabled = false);
       })
@@ -103,6 +70,47 @@
 
     let navChart;
     let percentageChart;
+
+    function calculatePeriodReturn(data) {
+      if (!data || data.length < 2) return null;
+
+      const first = data[0];
+      const last = data[data.length - 1];
+
+      if (!first.nav || !last.nav) return null;
+
+      const pct = ((last.nav - first.nav) / first.nav) * 100;
+      return Number(pct.toFixed(2));
+    }
+
+    function renderSummaryBoxes() {
+      const periods = [
+        { id: 'summary-7', days: 7 },
+        { id: 'summary-30', days: 30 },
+        { id: 'summary-180', days: 180 },
+        { id: 'summary-365', days: 365 }
+      ];
+
+      periods.forEach(({ id, days }) => {
+        const valueEl = document.getElementById(id);
+        if (!valueEl) return;
+
+        const filtered = filterData(days);
+        const value = calculatePeriodReturn(filtered);
+
+        if (value === null) {
+          valueEl.textContent = '--';
+          valueEl.className = 'summary-value';
+          return;
+        }
+
+        const formatted = `${value > 0 ? '+' : ''}${value.toFixed(2)}%`;
+        valueEl.textContent = formatted;
+        valueEl.className = 'summary-value';
+        if (value > 0) valueEl.classList.add('positive');
+        else if (value < 0) valueEl.classList.add('negative');
+      });
+    }
 
     function filterData(days) {
       if (!days) return rawData;
@@ -179,6 +187,7 @@
 
       const filtered = filterData(days);
       renderCharts(filtered);
+      renderSummaryBoxes();
     }
 
     // Initial render is now handled in the fetch

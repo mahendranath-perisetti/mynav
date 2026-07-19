@@ -1,52 +1,62 @@
 [
   {
-    "date": "2025-01-01",
-    "nav": 1000,
+    "date": "2026-04-29",
+    "aum": 13000,
+    "nav": 1000.0,
     "percentage_return": 0.0
   },
   {
-    "date": "2025-02-01",
-    "nav": 1001,
-    "percentage_return": 0.1
+    "date": "2026-04-30",
+    "aum": 13006.3,
+    "nav": 1000.48,
+    "percentage_return": 0.05
   },
   {
-    "date": "2025-03-01",
-    "nav": 1002,
-    "percentage_return": 0.2
+    "date": "2026-05-01",
+    "aum": 13090,
+    "nav": 1006.92,
+    "percentage_return": 0.69
   },
   {
-    "date": "2025-04-01",
-    "nav": 1003,
-    "percentage_return": 0.3
+    "date": "2026-05-02",
+    "aum": 13090,
+    "nav": 1006.92,
+    "percentage_return": 0.69
   },
   {
-    "date": "2025-05-01",
-    "nav": 1004,
-    "percentage_return": 0.4
+    "date": "2026-05-03",
+    "aum": 13090,
+    "nav": 1006.92,
+    "percentage_return": 0.69
   },
   {
-    "date": "2025-06-01",
-    "nav": 1005,
-    "percentage_return": 0.5
+    "date": "2026-05-04",
+    "aum": 13090,
+    "nav": 1006.92,
+    "percentage_return": 0.69
   },
   {
-    "date": "2025-07-01",
-    "nav": 1006,
-    "percentage_return": 0.6
+    "date": "2026-05-05",
+    "aum": 13090,
+    "nav": 1006.92,
+    "percentage_return": 0.69
   },
   {
-    "date": "2025-08-01",
-    "nav": 1007,
-    "percentage_return": 0.7
+    "date": "2026-05-06",
+    "aum": 13090,
+    "nav": 1006.92,
+    "percentage_return": 0.69
   },
   {
-    "date": "2025-09-01",
-    "nav": 1005,
-    "percentage_return": 0.5
+    "date": "2026-05-07",
+    "aum": 13090,
+    "nav": 1006.92,
+    "percentage_return": 0.69
   },
   {
-    "date": "2025-10-01",
-    "nav": 1010,
-    "percentage_return": 1.0
+    "date": "2026-05-08",
+    "aum": 13120,
+    "nav": 1009.23,
+    "percentage_return": 0.92
   }
 ]
