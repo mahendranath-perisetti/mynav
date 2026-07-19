@@ -12,8 +12,21 @@
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    h1 {
+    .page-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .page-title h1 {
       text-align: center;
+      margin: 0;
+    }
+    .title-icon {
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
     }
     .controls {
       text-align: center;
@@ -69,7 +82,7 @@
     }
     .chart-column {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
       gap: 24px;
     }
     .chart-card {
