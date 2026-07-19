@@ -77,30 +77,42 @@
     }
     .chart-row {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 24px;
+      align-items: stretch;
     }
     .chart-column {
       display: grid;
-      grid-template-rows: 1fr 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 24px;
+      align-items: stretch;
     }
     .chart-card {
+      display: flex;
+      flex-direction: column;
+      min-height: 360px;
       padding: 16px;
       background: #c2d2da;
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
     .chart-card h2 {
-      margin-top: 0;
+      margin: 0 0 12px;
       font-size: 1.1rem;
       text-align: center;
     }
+    .chart-card canvas {
+      flex: 1 1 auto;
+      width: 100% !important;
+      height: 100% !important;
+      max-height: 300px;
+    }
     @media (max-width: 800px) {
-      .chart-row {
+      .chart-row,
+      .chart-column {
         grid-template-columns: 1fr;
       }
       .summary-grid {
-        grid-template-rows: 1fr 1fr;
+        grid-template-columns: 1fr 1fr;
       }
     }
