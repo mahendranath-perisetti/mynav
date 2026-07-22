@@ -44,7 +44,7 @@
 
     <div class="chart-tabs">
       <button class="tab-button active" data-tab="nav">NAV</button>
-      <button class="tab-button" data-tab="percentage">Percentage Return</button>
+      <button class="tab-button" data-tab="percentage">% Return</button>
     </div>
 
     <div class="tab-panels">
@@ -52,7 +52,7 @@
         <h2>NAV</h2>
         <canvas id="navChart"></canvas>
       </div>
-      <div class="chart-card tab-panel" id="percentage-panel">
+      <div class="chart-card tab-panel" id="percentage-panel" hidden>
         <h2>Percentage Return</h2>
         <canvas id="percentageChart"></canvas>
       </div>
@@ -193,7 +193,14 @@
       });
 
       document.querySelectorAll('.tab-panel').forEach(panel => {
-        panel.classList.toggle('active', panel.id === `${tabName}-panel`);
+        const isActive = panel.id === `${tabName}-panel`;
+        panel.classList.toggle('active', isActive);
+        panel.hidden = !isActive;
+      });
+
+      requestAnimationFrame(() => {
+        if (navChart) navChart.resize();
+        if (percentageChart) percentageChart.resize();
       });
     }
 
