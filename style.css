@@ -75,21 +75,36 @@
       background: #0fc7e7;
       color: white;
     }
-    .chart-row {
+    .chart-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .tab-button {
+      background: #e9f2f5;
+      color: #2d3748;
+      border: 1px solid #cbd5e0;
+      font-weight: 600;
+    }
+    .tab-button.active {
+      background: #0fc7e7;
+      color: white;
+      border-color: #0fc7e7;
+    }
+    .tab-panels {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 24px;
       align-items: stretch;
     }
-    .chart-column {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 24px;
-      align-items: stretch;
+    .tab-panel {
+      display: none;
     }
-    .chart-card {
+    .tab-panel.active {
       display: flex;
       flex-direction: column;
+    }
+    .chart-card {
       min-height: 360px;
       padding: 16px;
       background: #c2d2da;

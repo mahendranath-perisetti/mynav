@@ -16,11 +16,11 @@
     </div>
 
     <div class="controls">
-      <button onclick="setRange(7, this)" disabled>1W </button>
-      <button onclick="setRange(30, this)" disabled>1M </button>
-      <button onclick="setRange(180, this)" disabled>6M </button>
-      <button onclick="setRange(365, this)" disabled>1Y </button>
-      <button onclick="setRange(null, this)" class="active" disabled>All</button>
+      <button class="range-button" onclick="setRange(7, this)" disabled>1W</button>
+      <button class="range-button" onclick="setRange(30, this)" disabled>1M</button>
+      <button class="range-button" onclick="setRange(180, this)" disabled>6M</button>
+      <button class="range-button" onclick="setRange(365, this)" disabled>1Y</button>
+      <button class="range-button active" onclick="setRange(null, this)" disabled>All</button>
     </div>
 
     <div class="summary-grid">
@@ -42,12 +42,17 @@
       </div>
     </div>
 
-    <div class="chart-column">
-      <div class="chart-card">
+    <div class="chart-tabs">
+      <button class="tab-button active" data-tab="nav">NAV</button>
+      <button class="tab-button" data-tab="percentage">Percentage Return</button>
+    </div>
+
+    <div class="tab-panels">
+      <div class="chart-card tab-panel active" id="nav-panel">
         <h2>NAV</h2>
         <canvas id="navChart"></canvas>
       </div>
-     <div class="chart-card">
+      <div class="chart-card tab-panel" id="percentage-panel">
         <h2>Percentage Return</h2>
         <canvas id="percentageChart"></canvas>
       </div>
@@ -67,8 +72,8 @@
         dataLoaded = true;
         renderCharts(rawData);
         renderSummaryBoxes();
-        // Enable buttons
-        document.querySelectorAll('button').forEach(btn => btn.disabled = false);
+        // Enable range buttons
+        document.querySelectorAll('.range-button').forEach(btn => btn.disabled = false);
       })
       .catch(error => console.error('Error loading data:', error));
 
@@ -182,10 +187,20 @@
       });
     }
 
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === tabName);
+      });
+
+      document.querySelectorAll('.tab-panel').forEach(panel => {
+        panel.classList.toggle('active', panel.id === `${tabName}-panel`);
+      });
+    }
+
     function setRange(days, button) {
       if (!dataLoaded) return;
 
-      const buttons = document.querySelectorAll('button');
+      const buttons = document.querySelectorAll('.range-button');
       buttons.forEach(btn => btn.classList.remove('active'));
       button.classList.add('active');
 
@@ -193,6 +208,10 @@
       renderCharts(filtered);
       renderSummaryBoxes();
     }
+
+    document.querySelectorAll('.tab-button').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
 
     // Initial render is now handled in the fetch
   </script>
