@@ -7,7 +7,7 @@ OUTPUT_FILE = BASE_DIR / 'returns.json'
 
 # If your data.json values are total AUM, set shares_outstanding here.
 # For example, if the fund has 10,000 outstanding shares, set 10000.
-shares_outstanding = 15.0
+shares_outstanding = 150.0
 
 with INPUT_FILE.open('r', encoding='utf-8') as f:
     data = json.load(f)
